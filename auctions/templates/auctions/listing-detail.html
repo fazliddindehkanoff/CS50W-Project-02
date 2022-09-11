@@ -36,12 +36,12 @@
                     </p>
                     <button class="btn btn-danger">Cancel</button>
                     {% else %}
-                    <small class="text-muted">Your bid must be greater than current bid {{ bid.bid__max }}$</small>
-                    <form action="#" method="post" class="row g-3 mt-3">
+                    <small class="text-muted">Your bid must be greater than current bid {{ bid.bid }}$</small>
+                    <form action="{% url 'add-bidding' listing.pk %}" method="post" class="row g-3 mt-3">
                         {% csrf_token %}
                         <div class="col-auto">
-                            <input type="hidden" id="current_bid" data-bid="{{ bid.bid__max }}">
-                            <input type="number" class="form-control" id="bid" placeholder="Current bid: {{ bid.bid__max }}$">
+                            <input type="hidden" id="current_bid" data-bid="{{ bid.bid }}">
+                            <input type="number" class="form-control" id="bid" placeholder="Current bid: {{ bid.bid }}$">
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary mb-3" onclick="validateBidding()">Confirm bid</button>
@@ -52,6 +52,7 @@
                     <ul>
                         <li>Listed by: {{ listing.owner }}</li>
                         <li>Category: {{ listing.get_category_display }}</li>
+                        <li>Current Bid from: {{ bid.user }}</li>
                         <span class="card-text" style="margin-left: 70%;"><small class="text-muted">Added at {{ listing.time }}</small></span>
                     </ul>
                 </div>

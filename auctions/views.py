@@ -18,10 +18,12 @@ def home(request):
 
 
 def listing_detail(request, pk):
+    bid = models.Bid.objects.filter(listing=pk).order_by('-bid').first()  
 
     context = {}
     context["listing"] = models.Listing.objects.filter(id=pk).first()
-    context["bid"] = models.Bid.objects.filter(listing=pk).aggregate(Max("bid"))
+    context["bid"] = bid
+    
     context["in_watchlist"] = models.Watchlist.objects.filter(user=request.user, listing=pk).exists()
 
     return render(request, "auctions/listing-detail.html", context)
@@ -43,7 +45,12 @@ def remove_from_watchlist(request, pk):
 @login_required(login_url="login")
 def bidding(request, pk, bid_amount):
     bid = models.Bid()
-    
+    bid.bid = bid_amount
+    bid.user = request.user
+    bid.listing = models.Listing.objects.filter(id=pk).first()
+    bid.save()
+
+    return redirect("listing-detail", pk)
 
 def logIn(request):
     form = LoginForm()
