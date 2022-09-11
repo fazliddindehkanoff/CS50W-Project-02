@@ -1,12 +1,27 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
-from .forms import LoginForm, RegistrationForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+from .forms import LoginForm, RegistrationForm
+from . import models, constants
 
 def home(request):
-    
-    return render(request, "auctions/index.html")
+
+    context = {}
+    active_listings = models.Listing.objects.filter(closed=False).all()
+    context["active_listings"] = active_listings
+
+    return render(request, "auctions/index.html", context)
+
+
+def listing_detail(request, pk):
+
+    context = {}
+    context["listing"] = models.Listing.objects.filter(id=pk).first()
+
+    return render(request, "auctions/listing-detail.html", context)
 
 def logIn(request):
     form = LoginForm()
@@ -26,6 +41,7 @@ def logIn(request):
 
     return render(request, "auctions/login.html", {"form": form})
 
+@login_required(login_url="login")
 def logOut(request):
     logout(request)
     messages.success(request, "Successfully logged out")

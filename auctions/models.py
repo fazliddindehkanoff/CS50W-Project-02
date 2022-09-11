@@ -29,7 +29,7 @@ class Bid(models.Model):
     def __str__(self):
         return f"{self.user} - {self.listing} - {self.bid}$"
 
-class Comments(models.Model):
+class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     time = models.DateTimeField(auto_now_add=True)
     comment = models.TextField()

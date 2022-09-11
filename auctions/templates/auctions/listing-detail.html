@@ -1,0 +1,33 @@
+{% extends 'auctions/layout.html' %}
+{% block title %}
+{{ listing }}
+{% endblock title %}
+{% block body %}
+<h2 class="text-center fw-semibold m-4">{{ listing.title }}</h2>
+
+<div style="width: 90%; margin: 2% auto;">
+    <div class="card mb-3">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="{{ listing.link }}" class="img-fluid rounded-start" style="width: 45rem;" alt="{{ listing.title }}">
+            </div>
+            <div class="col-md-8 mt-5">
+                <div class="card-body">
+                    <h2 class="card-title">Listing: {{ listing.title }}</h2>
+                    {% if user == listing.owner %}
+                        <h3>You are owner</h3>
+                    {% else %}
+                        <h3>You are not owner</h3>
+                    {% endif %}
+                    <p class="card-text mt-3">{{ listing.description }}</p>
+                    <p class="card-title fw-bolder">price: {{ listing.price }}$</p>
+                    <div class="bottom mt-5">
+                        <span class="card-text"><small class="text-muted">Added at {{ listing.time }}</small></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}
