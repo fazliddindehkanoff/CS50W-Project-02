@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.db.models import Max
 
 from .forms import LoginForm, RegistrationForm
 from . import models, constants
@@ -20,6 +21,8 @@ def listing_detail(request, pk):
 
     context = {}
     context["listing"] = models.Listing.objects.filter(id=pk).first()
+    context["bid"] = models.Bid.objects.filter(listing=pk).aggregate(Max("bid"))
+    context["in_watchlist"] = True
 
     return render(request, "auctions/listing-detail.html", context)
 

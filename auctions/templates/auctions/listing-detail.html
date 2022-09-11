@@ -9,21 +9,42 @@
     <div class="card mb-3">
         <div class="row g-0">
             <div class="col-md-4">
+                {% if in_watchlist %}
+                    <div class="badge bg-secondary text-wrap" style="width: 6rem; position: relative; margin-top:5%;">
+                        Watchlist
+                    </div>
+                {% endif %}
                 <img src="{{ listing.link }}" class="img-fluid rounded-start" style="width: 45rem;" alt="{{ listing.title }}">
             </div>
             <div class="col-md-8 mt-5">
                 <div class="card-body">
                     <h2 class="card-title">Listing: {{ listing.title }}</h2>
-                    {% if user == listing.owner %}
-                        <h3>You are owner</h3>
-                    {% else %}
-                        <h3>You are not owner</h3>
-                    {% endif %}
                     <p class="card-text mt-3">{{ listing.description }}</p>
                     <p class="card-title fw-bolder">price: {{ listing.price }}$</p>
-                    <div class="bottom mt-5">
-                        <span class="card-text"><small class="text-muted">Added at {{ listing.time }}</small></span>
-                    </div>
+                    {% if user == listing.owner and bid %}
+                    <button class="btn btn-secondary">Close</button>
+                    {% elif user == listing.owner %}
+                    <p class="text-info">You cannot close it because no one bid for your listing therefore you can only cancel your listing
+                    </p>
+                    <button class="btn btn-danger">Cancel</button>
+                    {% else %}
+                    <small class="text-muted">Your bid must be greater than current bid {{ bid.bid__max }}$</small>
+                    <form action="#" method="post" class="row g-3 mt-3">
+                        {% csrf_token %}
+                        <div class="col-auto">
+                            <input type="password" class="form-control" id="bid" placeholder="Current bid: {{ bid.bid__max }}$">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary mb-3">Confirm bid</button>
+                        </div>
+                    </form>
+                    {% endif %}
+                    <p>Details:</p>
+                    <ul>
+                        <li>Listed by: {{ listing.owner }}</li>
+                        <li>Category: {{ listing.get_category_display }}</li>
+                        <span class="card-text" style="margin-left: 70%;"><small class="text-muted">Added at {{ listing.time }}</small></span>
+                    </ul>
                 </div>
             </div>
         </div>
