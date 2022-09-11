@@ -1,0 +1,68 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>{% block title %}Auctions{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+
+<body>
+    {% include 'auctions/includes/messages.html' %} 
+    <div class="card border-light">
+        <div class="card-header">
+            <h1 class="text-center mb-2 mt-3">Auctions</h1>
+            <nav class="navbar navbar-expand-lg bg-light">
+                <div class="container-fluid">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a href="{% url 'home' %}" class="nav-link text-primary fw-semibold">Active Listings</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link text-primary fw-semibold">Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link text-primary fw-semibold">Watchlist
+                                <span class="badge bg-secondary">{{ watchlist_count }}</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link text-primary fw-semibold">Create Listing</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'logout' %}" class="nav-link text-primary fw-semibold">Log Out</a>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a href="{% url 'home' %}" class="nav-link text-primary fw-semibold">Active Listings</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'login' %}" class="nav-link text-primary fw-semibold">Log In</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{% url 'register' %}" class="nav-link text-primary fw-semibold">Register</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                    <div>
+                        {% if user.is_authenticated %}
+                        <h5 class="text-end">Signed in as <strong>{{ user.username }}</strong>.</h5>
+                        {% else %}
+                        <h5 class="text-end">Not signed in.</h5>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </div>
+    {% block body %}
+    {% endblock %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+
+</body>
+
+</html>
