@@ -9,10 +9,18 @@
     <div class="card mb-3">
         <div class="row g-0">
             <div class="col-md-4">
-                {% if in_watchlist %}
-                    <div class="badge bg-secondary text-wrap" style="width: 6rem; position: relative; margin-top:5%;">
-                        Watchlist
-                    </div>
+                {% if not in_watchlist %}
+                    <a href="{% url 'add-to-watchlist' listing.pk %}">
+                        <div class="badge bg-secondary text-wrap" style="width: 10rem; position: relative; margin-top:5%;">
+                            Add to Watchlist
+                        </div>
+                    </a>
+                {% else %}
+                    <a href="{% url 'remove-from-watchlist' listing.pk %}">
+                        <div class="badge bg-danger text-wrap" style="width: 10rem; position: relative; margin-top:5%;">
+                            Remove from Watchlist
+                        </div>
+                    </a>
                 {% endif %}
                 <img src="{{ listing.link }}" class="img-fluid rounded-start" style="width: 45rem;" alt="{{ listing.title }}">
             </div>
@@ -32,10 +40,11 @@
                     <form action="#" method="post" class="row g-3 mt-3">
                         {% csrf_token %}
                         <div class="col-auto">
-                            <input type="password" class="form-control" id="bid" placeholder="Current bid: {{ bid.bid__max }}$">
+                            <input type="hidden" id="current_bid" data-bid="{{ bid.bid__max }}">
+                            <input type="number" class="form-control" id="bid" placeholder="Current bid: {{ bid.bid__max }}$">
                         </div>
                         <div class="col-auto">
-                            <button type="submit" class="btn btn-primary mb-3">Confirm bid</button>
+                            <button type="submit" class="btn btn-primary mb-3" onclick="validateBidding()">Confirm bid</button>
                         </div>
                     </form>
                     {% endif %}
