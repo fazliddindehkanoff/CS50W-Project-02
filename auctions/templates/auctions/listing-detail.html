@@ -41,7 +41,7 @@
                         {% csrf_token %}
                         <div class="col-auto">
                             <input type="hidden" id="current_bid" data-bid="{{ bid.bid }}">
-                            <input type="number" class="form-control" id="bid" placeholder="Current bid: {{ bid.bid }}$">
+                            <input type="number" name="bidding_amount" class="form-control" id="bid" placeholder="Current bid: {{ bid.bid }}$">
                         </div>
                         <div class="col-auto">
                             <button type="submit" class="btn btn-primary mb-3" onclick="validateBidding()">Confirm bid</button>

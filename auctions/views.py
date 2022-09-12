@@ -43,7 +43,8 @@ def remove_from_watchlist(request, pk):
     return redirect("listing-detail", pk)
 
 @login_required(login_url="login")
-def bidding(request, pk, bid_amount):
+def bidding(request, pk):
+    bid_amount = request.POST.get("bidding_amount")
     bid = models.Bid()
     bid.bid = bid_amount
     bid.user = request.user
