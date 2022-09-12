@@ -1,3 +1,6 @@
+import json
+
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
@@ -23,7 +26,7 @@ def listing_detail(request, pk):
     context = {}
     context["listing"] = models.Listing.objects.filter(id=pk).first()
     context["bid"] = bid
-    
+    context["comments"] = models.Comment.objects.all()
     context["in_watchlist"] = models.Watchlist.objects.filter(user=request.user, listing=pk).exists()
 
     return render(request, "auctions/listing-detail.html", context)
@@ -53,6 +56,22 @@ def bidding(request, pk):
 
     return redirect("listing-detail", pk)
 
+def addComment(request):
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax and request.method == "POST":
+        data = json.load(request)
+        pk = data.get("listing_pk")
+        comment_text = data.get("comment_text")
+
+        comment = models.Comment()
+        comment.user = request.user
+        comment.comment = comment_text
+        comment.listing = models.Listing.objects.filter(id=pk).first()
+        comment.save()
+
+        return HttpResponse("Comment have been added")
+
 def logIn(request):
     form = LoginForm()
     if request.method == "POST":
@@ -61,7 +80,6 @@ def logIn(request):
             username = form.cleaned_data.get("username")
             password = form.cleaned_data.get("password")
             user = authenticate(username=username, password=password)
-            print(user, username, password)
             if user is not None:
                 login(request, user)
                 messages.success(request, message="Logged in successfully")

@@ -4,7 +4,6 @@
 {% endblock title %}
 {% block body %}
 <h2 class="text-center fw-semibold m-4">{{ listing.title }}</h2>
-
 <div style="width: 90%; margin: 2% auto;">
     <div class="card mb-3">
         <div class="row g-0">
@@ -60,5 +59,22 @@
         </div>
     </div>
 </div>
-
+<div class="comments" style="width: 90%; margin: 2% auto;">
+    <h3 class="text-muted">Comments</h3>
+    <div class="comments" id="comments">
+        {% for comment in comments %}
+        <form class="form-floating" style="margin-bottom: 1%;">
+            <input type="text" readonly class="form-control" id="floatingInputValue"
+                value="{{ comment.comment }}">
+            <label for="floatingInputValue">{{ comment.user }}</label>
+        </form>
+        {% endfor %}
+    </div>
+    <div class="form-floating">
+        <textarea class="form-control" id="floatingTextarea2"
+            style="height: 100px"></textarea>
+        <label for="floatingTextarea2">Comment</label>
+        <button class="btn btn-primary mt-2" id="comment-btn" type="submit" data-listing="{{ listing.pk }}" data-url="{% url 'add-comment' %}" data-user="{{ user }}" onclick="makeComment()">Comment</button>
+    </div>
+</div>
 {% endblock body %}
