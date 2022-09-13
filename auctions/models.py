@@ -9,7 +9,7 @@ class User(AbstractUser):
 class Listing(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=64)
-    description = models.TextField()
+    description = models.TextField(max_length=360)
     price = models.IntegerField()
     category = models.IntegerField(choices=CATEGORIES, null=True)
     link = models.CharField(max_length=255)

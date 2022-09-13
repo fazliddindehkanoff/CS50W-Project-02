@@ -6,7 +6,6 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.db.models import Max
 
 from .forms import LoginForm, RegistrationForm
 from . import models, constants
@@ -48,11 +47,28 @@ def remove_from_watchlist(request, pk):
 @login_required(login_url="login")
 def bidding(request, pk):
     bid_amount = request.POST.get("bidding_amount")
-    bid = models.Bid()
-    bid.bid = bid_amount
-    bid.user = request.user
-    bid.listing = models.Listing.objects.filter(id=pk).first()
-    bid.save()
+    listing = models.Listing.objects.filter(id=pk).first()
+    bid_available = models.Bid.objects.filter(user=request.user, listing=listing)
+    if bid_available.exists():
+        bid_available = bid_available.first()
+        bid_available.bid = bid_amount
+        bid_available.save()
+    else:
+        bid = models.Bid()
+        bid.bid = bid_amount
+        bid.user = request.user
+        bid.listing = listing
+        bid.save()
+
+    return redirect("listing-detail", pk)
+
+def close_bidding(request, pk):
+    listing = models.Listing.objects.filter(id=pk).first()
+    bid = models.Bid.objects.filter(listing=listing).order_by("-bid")[0]
+    listing.winner = bid.user
+    listing.closed = True
+    listing.final_price = bid.bid
+    listing.save()
 
     return redirect("listing-detail", pk)
 

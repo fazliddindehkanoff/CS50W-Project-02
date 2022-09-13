@@ -8,13 +8,13 @@
     <div class="card mb-3">
         <div class="row g-0">
             <div class="col-md-4">
-                {% if not in_watchlist %}
+                {% if not in_watchlist and user != listing.owner %}
                     <a href="{% url 'add-to-watchlist' listing.pk %}">
                         <div class="badge bg-secondary text-wrap" style="width: 10rem; position: relative; margin-top:5%;">
                             Add to Watchlist
                         </div>
                     </a>
-                {% else %}
+                {% elif in_watchlist %}
                     <a href="{% url 'remove-from-watchlist' listing.pk %}">
                         <div class="badge bg-danger text-wrap" style="width: 10rem; position: relative; margin-top:5%;">
                             Remove from Watchlist
@@ -28,8 +28,11 @@
                     <h2 class="card-title">Listing: {{ listing.title }}</h2>
                     <p class="card-text mt-3">{{ listing.description }}</p>
                     <p class="card-title fw-bolder">price: {{ listing.price }}$</p>
-                    {% if user == listing.owner and bid %}
-                    <button class="btn btn-secondary">Close</button>
+                    {% if listing.closed %}
+                        <p class="text-muted">Listing have been closed</p>
+                    {% elif user == listing.owner and bid %}
+                    <p class="test-muted">Current bid: {{ bid.bid }}$</p>
+                    <a href="{% url 'close-bidding' listing.pk %}" class="btn btn-secondary mb-3">Close</a>
                     {% elif user == listing.owner %}
                     <p class="text-info">You cannot close it because no one bid for your listing therefore you can only cancel your listing
                     </p>
