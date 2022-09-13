@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 
-from . import models, constants
+from . import models, constants, forms
 
 def home(request):
     context = {}
@@ -101,9 +101,26 @@ def addComment(request):
 
         return HttpResponse("Comment have been added")
 
+@login_required(login_url="login")
 def categories(request):
 
     context = {}
     context["categories"] = constants.CATEGORIES
 
     return render(request, "auctions/categories.html", context)
+
+@login_required(login_url="login")
+def create_listing(request):
+    form = forms.ListingForm(user=request.user)
+    context = {}
+
+    if request.method == "POST":
+        form = forms.ListingForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("home")
+
+
+    context["form"] = form
+
+    return render(request, "auctions/create-listing.html", context)

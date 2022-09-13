@@ -6,6 +6,7 @@ urlpatterns = [
     #listing
     path("", home, name="home"),
     path("listing/<int:pk>/", listing_detail, name="listing-detail"),
+    path("create-listing/", create_listing, name="create-listing"),
     #watchlist
     path("my-watchlist/", watchList, name="my-watchlist"),
     path("add-to-watchlist/<int:pk>/", add_to_watchlist, name="add-to-watchlist"),
