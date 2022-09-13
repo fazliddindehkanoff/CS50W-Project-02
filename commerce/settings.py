@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'auctions',
+    'authentication',
     'bootstrap4'
 ]
 
@@ -80,7 +81,7 @@ DATABASES = {
     }
 }
 
-AUTH_USER_MODEL = "auctions.User" 
+AUTH_USER_MODEL = "authentication.User" 
 
 
 # Password validation
