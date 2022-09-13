@@ -7,9 +7,14 @@ from django.contrib.auth.decorators import login_required
 from . import models, constants
 
 def home(request):
-
     context = {}
-    active_listings = models.Listing.objects.filter(closed=False).all()
+    category = request.GET.get("category", None)
+
+    if category:
+        active_listings = models.Listing.objects.filter(closed=False, category=category)
+    else:
+        active_listings = models.Listing.objects.filter(closed=False).all()
+
     context["active_listings"] = active_listings
 
     return render(request, "auctions/index.html", context)
@@ -95,3 +100,10 @@ def addComment(request):
         comment.save()
 
         return HttpResponse("Comment have been added")
+
+def categories(request):
+
+    context = {}
+    context["categories"] = constants.CATEGORIES
+
+    return render(request, "auctions/categories.html", context)

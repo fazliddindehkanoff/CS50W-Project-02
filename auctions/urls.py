@@ -11,8 +11,10 @@ urlpatterns = [
     path("add-to-watchlist/<int:pk>/", add_to_watchlist, name="add-to-watchlist"),
     path("remove-from-watchlist/<int:pk>/", remove_from_watchlist, name="remove-from-watchlist"),
     #bidding
-    path("add-bidding/<int:pk>", bidding, name="add-bidding"),
-    path("close-bidding/<int:pk>", close_bidding, name="close-bidding"),
+    path("add-bidding/<int:pk>/", bidding, name="add-bidding"),
+    path("close-bidding/<int:pk>/", close_bidding, name="close-bidding"),
     #comment
     path("add-comment/", addComment, name="add-comment"),
+    #categories
+    path("categories/", categories, name="categories")
 ]

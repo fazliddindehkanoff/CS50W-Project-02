@@ -1,0 +1,11 @@
+{% extends 'auctions/layout.html' %}
+
+{% block body %}
+    <h2 class="fw-semibold m-4">Listing Categories</h2>
+    <ul style="margin-left: 1%;">
+        {% for category in categories %}
+            <a href="{% url 'home' %}?category={{ category.0 }}" class="text-decoration-none"><li>{{ category.1 }}</li></a>
+        {% endfor %}
+    </ul>
+
+{% endblock body %}
