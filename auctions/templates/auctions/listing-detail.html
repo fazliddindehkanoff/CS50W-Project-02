@@ -8,13 +8,13 @@
     <div class="card mb-3">
         <div class="row g-0">
             <div class="col-md-4">
-                {% if not in_watchlist and user != listing.owner %}
+                {% if not in_watchlist and user != listing.owner and user.is_authenticated %}
                     <a href="{% url 'add-to-watchlist' listing.pk %}">
                         <div class="badge bg-secondary text-wrap" style="width: 10rem; position: relative; margin-top:5%;">
                             Add to Watchlist
                         </div>
                     </a>
-                {% elif in_watchlist %}
+                {% elif in_watchlist and user.is_authenticated %}
                     <a href="{% url 'remove-from-watchlist' listing.pk %}">
                         <div class="badge bg-danger text-wrap" style="width: 10rem; position: relative; margin-top:5%;">
                             Remove from Watchlist

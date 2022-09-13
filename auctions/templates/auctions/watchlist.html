@@ -1,0 +1,40 @@
+{% extends 'auctions/layout.html' %}
+{% block body %}
+{% if not watchlists %}
+    <div class="watchlist-heading">
+        <h2 class="text-center fw-semibold m-4">
+            <a href="{% url 'home' %}" class="fs-3 btn btn-outline-primary">
+                You are not watching any listing! Browse all listings
+            </a>
+        </h2>
+    </div>
+{% else %}
+    <h2 class="text-center fw-semibold m-4">Watchlist</h2>
+    {% for watchlist in watchlists %}
+        <div class="wrapper">
+            <div class="card mb-3" style="max-width: 80%px;">
+                <div class="row g-0">
+                    <div class="col-md-4">
+                        <img src="{{ watchlist.listing.link }}" class="img-fluid rounded-start"
+                            alt="{{ watchlist.listing.title }}">
+                    </div>
+                    <div class="col-md-8 mt-5">
+                        <div class="card-body">
+                            <a href="{% url 'listing-detail' watchlist.listing.pk %}" class="text-decoration-none">
+                                <h5 class="card-title">{{ watchlist.listing.title }}</h5>
+                            </a>
+                            <p class="card-text">{{ watchlist.listing.description|truncatechars:300 }}</p>
+                            <p class="card-title fw-bolder">price: {{ watchlist.listing.price }}$</p>
+                            <div class="bottom">
+                                <span class="card-text"><small class="text-muted">Added at {{ watchlist.listing.time
+                                        }}</small></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endif %}
+
+{% endblock body %}

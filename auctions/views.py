@@ -26,9 +26,20 @@ def listing_detail(request, pk):
     context["listing"] = models.Listing.objects.filter(id=pk).first()
     context["bid"] = bid
     context["comments"] = models.Comment.objects.all()
-    context["in_watchlist"] = models.Watchlist.objects.filter(user=request.user, listing=pk).exists()
+    try:
+        context["in_watchlist"] = models.Watchlist.objects.filter(user=request.user, listing=pk).exists()
+    except TypeError:
+        context["in_watchlist"] = False
 
     return render(request, "auctions/listing-detail.html", context)
+
+@login_required(login_url="login")
+def watchList(request):
+    context = {}
+    watchlist = models.Watchlist.objects.filter(user=request.user).all()
+    context["watchlists"] = watchlist
+
+    return render(request, "auctions/watchlist.html", context)
 
 @login_required(login_url="login")
 def add_to_watchlist(request, pk):
@@ -62,6 +73,7 @@ def bidding(request, pk):
 
     return redirect("listing-detail", pk)
 
+@login_required(login_url="login")
 def close_bidding(request, pk):
     listing = models.Listing.objects.filter(id=pk).first()
     bid = models.Bid.objects.filter(listing=listing).order_by("-bid")[0]
@@ -72,6 +84,7 @@ def close_bidding(request, pk):
 
     return redirect("listing-detail", pk)
 
+@login_required(login_url="login")
 def addComment(request):
     is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
 
