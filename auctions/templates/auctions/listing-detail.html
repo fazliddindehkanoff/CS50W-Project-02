@@ -37,8 +37,8 @@
                     <p class="text-info">You cannot close it because no one bid for your listing therefore you can only cancel your listing
                     </p>
                     <button class="btn btn-danger">Cancel</button>
-                    {% else %}
-                    {% if user.is_athenticated %}
+                    
+                    {% elif user.is_authenticated %}
                         <small class="text-muted">Your bid must be greater than current bid {{ bid.bid }}$</small>
                         <form action="{% url 'add-bidding' listing.pk %}" method="post" class="row g-3 mt-3">
                             {% csrf_token %}
@@ -52,7 +52,6 @@
                         </form>
                     {% else %}
                         <p class="text-muted">You cannot bid for this listing! <a href="{% url 'login' %}">Login to bid</a></p>
-                    {% endif %}
                     {% endif %}
                     <p>Details:</p>
                     <ul>
