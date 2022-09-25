@@ -3,6 +3,7 @@ import json
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 
 from . import models, constants, forms
 
@@ -30,7 +31,7 @@ def listing_detail(request, pk):
         context["in_watchlist"] = models.Watchlist.objects.filter(user=request.user, listing=pk).exists()
     except TypeError:
         context["in_watchlist"] = False
-
+    context["comment_url"] = request.build_absolute_uri(reverse('add-comment'))
     return render(request, "auctions/listing-detail.html", context)
 
 @login_required(login_url="login")
@@ -55,21 +56,26 @@ def remove_from_watchlist(request, pk):
     models.Watchlist.objects.get(user=request.user, listing_id=pk).delete()
     return redirect("listing-detail", pk)
 
-@login_required(login_url="login")
 def bidding(request, pk):
-    bid_amount = request.POST.get("bidding_amount")
-    listing = models.Listing.objects.filter(id=pk).first()
-    bid_available = models.Bid.objects.filter(user=request.user, listing=listing)
-    if bid_available.exists():
-        bid_available = bid_available.first()
-        bid_available.bid = bid_amount
-        bid_available.save()
-    else:
-        bid = models.Bid()
-        bid.bid = bid_amount
-        bid.user = request.user
-        bid.listing = listing
-        bid.save()
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    if is_ajax and request.method == "POST":
+        data = json.load(request)
+        bid_amount = data.get("bid_amount")
+        user = data.get("user")
+
+        listing = models.Listing.objects.filter(id=pk).first()
+        bid_available = models.Bid.objects.filter(user=user, listing=listing)
+        if bid_available.exists():
+            bid_available = bid_available.first()
+            bid_available.bid = bid_amount
+            bid_available.save()
+        else:
+            bid = models.Bid()
+            bid.bid = bid_amount
+            bid.user = request.user
+            bid.listing = listing
+            bid.save()
 
     return redirect("listing-detail", pk)
 

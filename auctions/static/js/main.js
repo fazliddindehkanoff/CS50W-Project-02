@@ -1,12 +1,3 @@
-function validateBidding() {
-    var current_bid = document.getElementById("current_bid").getAttribute("data-bid")
-    var new_bid = document.getElementById("bid").value
-    if (current_bid >= new_bid) {
-        alert("Your bid is not enough!")
-    }
-    console.log(bidding_amount)
-}
-
 function getCookie(name) {
   let cookieValue = null;
   if (document.cookie && document.cookie !== "") {
@@ -24,29 +15,62 @@ function getCookie(name) {
 }
 
 
-function makeComment() {
-    var comment = document.getElementById("floatingTextarea2")
-    var comment_text = comment.value
-    comment.value = ""
-    var listing_pk = document.getElementById("comment-btn").getAttribute("data-listing")
-    var user = document.getElementById("comment-btn").getAttribute("data-user")
-    var comments = document.getElementById("comments")
-    form = "<form class='form-floating' style='margin-bottom: 1%;'>\
-    <input type='text' readonly class='form-control' id='floatingInputValue'\
-            value="+'"'+ comment_text + '"'+">\
-    <label for='floatingInputValue'>" + user + "</label>\
-    </form>"
-    var url = "http://localhost:8000" + document.getElementById("comment-btn").getAttribute("data-url")
+function validateBidding() {
+  var current_bid = document.getElementById("current_bid").getAttribute("data-bid")
+  var new_bid = document.getElementById("bid").value
+  var starting_price = document.getElementById("current_bid").getAttribute("data-start-price")
+  var user = document.getElementById("url").getAttribute("data-user")
+  var url = document.getElementById("url").getAttribute("data-url")
+  if (current_bid >= new_bid || starting_price > new_bid) {
+    swal({
+      title: "Your bid is not enough!",
+      icon: "error",
+    });
+  }
+  else {
     console.log(url);
     fetch(url, {
-        method: "POST",
-        credentials: "same-origin",
-        headers: {
-            "X-Requested-With": "XMLHttpRequest",
-            "X-CSRFToken": getCookie("csrftoken"),
-        },
-        body: JSON.stringify({listing_pk: listing_pk, comment_text: comment_text})
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "X-Requested-With": "XMLHttpRequest",
+        "X-CSRFToken": getCookie("csrftoken"),
+      },
+      body: JSON.stringify({"bid_amount": new_bid, "user": user })
     })
+  swal({
+      title: "Your have bidded successfully!",
+      icon: "success",
+  });
+  document.getElementById("bid").value = ""
+  document.getElementById("bid").placeholder = "Current bid: " + new_bid + "$"
+  document.getElementById("bid-info").innerText = "Your bid is the highest one!"
+  }
+}
 
-    comments.innerHTML += form
+
+function makeComment() {
+  var comment = document.getElementById("floatingTextarea2")
+  var comment_text = comment.value
+  comment.value = ""
+  var listing_pk = document.getElementById("comment-btn").getAttribute("data-listing")
+  var user = document.getElementById("comment-btn").getAttribute("data-user")
+  var comments = document.getElementById("comments")
+  form = "<form class='form-floating' style='margin-bottom: 1%;'>\
+    <input type='text' readonly class='form-control' id='floatingInputValue'\
+            value="+ '"' + comment_text + '"' + ">\
+    <label for='floatingInputValue'>" + user + "</label>\
+    </form>"
+  var url = document.getElementById("comment-btn").getAttribute("data-url")
+  fetch(url, {
+    method: "POST",
+    credentials: "same-origin",
+    headers: {
+      "X-Requested-With": "XMLHttpRequest",
+      "X-CSRFToken": getCookie("csrftoken"),
+    },
+    body: JSON.stringify({ listing_pk: listing_pk, comment_text: comment_text })
+  })
+
+  comments.innerHTML += form
 }
